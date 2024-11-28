@@ -4,7 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class LoginPage extends JPanel {
-    public LoginPage(MainFrame mainFrame) {
+    public LoginPage(MainFrame mainFrame, RoleSys roleSys) {
         setLayout(new BorderLayout());
 
         JPanel leftPanel = new JPanel();
@@ -59,23 +59,8 @@ public class LoginPage extends JPanel {
 
                 String userRole = mainFrame.checkLogin(email, password, selectedRole);
 
-                if (userRole != null) {
-                    switch (userRole) {
-                        case "Customer":
-                            mainFrame.showPage("CustomerDashboard");
-                            break;
-                        case "Admin":
-                            mainFrame.showPage("AdminDashboard");
-                            break;
-                        case "Employee":
-                            mainFrame.showPage("EmployeeDashboard");
-                            break;
-                        default:
-                            JOptionPane.showMessageDialog(LoginPage.this, "Invalid role for this account.", "Login Error", JOptionPane.ERROR_MESSAGE);
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(LoginPage.this, "Invalid email, password, or role!", "Login Error", JOptionPane.ERROR_MESSAGE);
-                }
+                // Call the RoleSys method 
+                roleSys.role_login(userRole, mainFrame);
             }
         });
         rightPanel.add(loginButton);
