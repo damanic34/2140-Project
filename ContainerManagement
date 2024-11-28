@@ -1,12 +1,12 @@
 import java.util.ArrayList;
 import java.util.List;   
 
-public class Container{
+public class ContainerManagement{
     private String containerId;
     private int maxCapacity;
     private List<Package> packages;
 
-    public Container(String containerId, int maxCapacity) {
+    public ContainerManagement(String containerId, int maxCapacity) {
         this.containerId = containerId;
         this.maxCapacity = maxCapacity;
         this.packages = new ArrayList<>();
@@ -56,12 +56,12 @@ public class Container{
 }
 
 
-class CargoTypes{
+class EditCargo{
     private String name;
     private String description;
 
 
-    public CargoTypes( String name, String description){
+    public EditCargo( String name, String description){
         this.name = name;
         this.description = description;
     }
@@ -78,10 +78,10 @@ class CargoTypes{
         return name + " - " + description;
     }
 
-class CargoManager{
+class CargoTypes{
     private List<Category> categories;
 
-    public CargoManager(){
+    public CargoTypes(){
         this.categories = new ArrayList<>();
         categories.add(new Category("Box"));
         categories.add(new Category("Barrel"));
