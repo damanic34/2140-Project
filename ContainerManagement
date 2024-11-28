@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;   
 
-public class ContainerManagement{
+public class Container{
     private String containerId;
     private int maxCapacity;
     private List<Package> packages;
@@ -71,7 +71,7 @@ class CargoTypes{
     }
 
     public String getDescription(){
-        return description
+        return description;
     }
 
     public String toString() {
@@ -108,7 +108,6 @@ class CargoManager{
             }
         }
         throw new IllegalArgumentException("Category not found: " + oldName);
+    
     }
-}
-
 }
