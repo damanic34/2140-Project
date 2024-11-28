@@ -12,7 +12,7 @@ public class Package {
     private LocalDateTime estimatedDeliveryDate;  // Estimated delivery date
     private double weight;          // Weight of the package
     private double volume;          // Volume of the package
-    private Category cargoType;
+    private Category cargoType;     // type of cargo 
 
     // Constructor
     public Package(String trackingNumber, String origin, String destination, String status,
@@ -168,3 +168,4 @@ class PackageTracker {
             System.out.println("Statuses refreshed successfully!");
         }
     }
+}
