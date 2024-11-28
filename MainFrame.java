@@ -15,9 +15,7 @@ import java.util.Map;
 class MainFrame extends JFrame {
     private CardLayout cardLayout;
     private JPanel cardPanel;
-
     private Map<String, User> userDatabase = new HashMap<>(); // Use userDatabase to store user data
-
 
     public MainFrame() {
         setTitle("Shipping Company System");
@@ -28,22 +26,24 @@ class MainFrame extends JFrame {
         // Card layout for page switching
         cardLayout = new CardLayout();
         cardPanel = new JPanel(cardLayout);
-        
+
+        // Create instance of RoleSys
+        RoleSys roleSys = new RoleSys();
+
         // Add all pages to the cardPanel
         cardPanel.add(new HomePage(this), "Home");
         cardPanel.add(new RegistrationPage(this), "Register");
-        cardPanel.add(new LoginPage(this), "Login");
-        // cardPanel.add(new DeliveryPage(), "Delivery");  // Add DeliveryPage 
+        // Pass both MainFrame and RoleSys to LoginPage
+        cardPanel.add(new LoginPage(this, roleSys), "Login");
         cardPanel.add(new ShippingRatesPage(), "Shipping Rates");  // Add ShippingRatesPage
         // Add the dashboards to the card panel
         cardPanel.add(new AdminDashboard(this), "AdminDashboard");
         cardPanel.add(new EmployeeDashboard(this), "EmployeeDashboard");
         cardPanel.add(new CustomerHome(this), "CustomerDashboard");
-        
+
         // Show Home Page initially
         cardLayout.show(cardPanel, "Home");
 
-        
         add(cardPanel);
 
         // More Button Menu (dropdown)
@@ -72,13 +72,10 @@ class MainFrame extends JFrame {
         menuBar.add(moreMenu);
 
         // Set the menu bar for the frame
-        setJMenuBar(menuBar);   
+        setJMenuBar(menuBar);
     }
 
-
-    
-
-     // Method to register a user in the userDatabase
+    // Method to register a user in the userDatabase
     public void registerUser(String email, String password, String role) {
         userDatabase.put(email, new User(email, password, role)); // Add user to the database
         // Write user data to file
@@ -102,11 +99,9 @@ class MainFrame extends JFrame {
                     String storedPassword = userData[1];
                     String storedRole = userData[2];
 
-                        if (storedEmail.equals(email) && storedPassword.equals(password) && storedRole.equalsIgnoreCase(role)) {
-                            return storedRole; // Return the role
-                        }
-                    
-                    
+                    if (storedEmail.equals(email) && storedPassword.equals(password) && storedRole.equalsIgnoreCase(role)) {
+                        return storedRole; // Return the role
+                    }
                 }
             }
         } catch (IOException e) {
@@ -114,6 +109,7 @@ class MainFrame extends JFrame {
         }
         return null; // No matching user found
     }
+
     // Method to get the role of a user based on email
     public String getUserRole(String email) {
         try (BufferedReader reader = new BufferedReader(new FileReader("user.txt"))) {
@@ -135,19 +131,18 @@ class MainFrame extends JFrame {
         return null; // Return null if no role found
     }
 
-    
     public void showPage(String pageName) {
         CardLayout layout = (CardLayout) getContentPane().getLayout();
         layout.show(getContentPane(), pageName);
     }
-    
-    
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             new MainFrame().setVisible(true);
         });
     }
 }
+
 
 
 
@@ -354,6 +349,9 @@ class ShippingRatesPage extends JPanel {
         add(backPanel, BorderLayout.SOUTH);  // Add to the bottom of the page
     }
 }
+
+
+
 
 
 
