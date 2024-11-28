@@ -12,6 +12,7 @@ public class Package {
     private LocalDateTime estimatedDeliveryDate;  // Estimated delivery date
     private double weight;          // Weight of the package
     private double volume;          // Volume of the package
+    private Category cargoType;
 
     // Constructor
     public Package(String trackingNumber, String origin, String destination, String status,
@@ -68,6 +69,13 @@ public class Package {
         return volume;
     }
 
+    public Category getCargoType() {
+        return cargoType;
+    }
+
+    public void setCargoType(Category cargoType) {
+        this.cargoType = cargoType;
+    }
     public String getDetails() {
         return "Tracking Number: " + trackingNumber + "\n" +
                "Origin: " + origin + "\n" +
@@ -77,6 +85,7 @@ public class Package {
                "Volume: " + volume + " cubic meters\n" +
                "Estimated Delivery Date: " + estimatedDeliveryDate + "\n" +
                "Last Updated: " + lastUpdated;
+               "cargoType: " + (cargoType != null cargoType.getName() : "Uncategorized") + "\n";
     }
 }
 
