@@ -1,0 +1,114 @@
+import java.util.ArrayList;
+import java.util.List;   
+
+public class ContainerManagement{
+    private String containerId;
+    private int maxCapacity;
+    private List<Package> packages;
+
+    public Container(String containerId, int maxCapacity) {
+        this.containerId = containerId;
+        this.maxCapacity = maxCapacity;
+        this.packages = new ArrayList<>();
+    }
+
+    public String getContainerId() {
+        return containerId;
+    }
+
+    public int getMaxCapacity() {
+        return maxCapacity;
+    }
+
+    public List<Package> getPackages() {
+        return packages;
+    }
+
+    public boolean addPackage(Package pkg) {
+        if (packages.size() < maxCapacity) {
+            packages.add(pkg);
+            System.out.println("Package " + pkg.getPackageId() + " added to container " + containerId);
+            return true;
+        } else {
+            System.out.println("Container " + containerId + " is full. Cannot add package " + pkg.getPackageId());
+            return false;
+        }
+    }
+
+    public boolean removePackage(String packageId) {
+        for (Package pkg : packages) {
+            if (pkg.getPackageId().equals(packageId)) {
+                packages.remove(pkg);
+                System.out.println("Package " + packageId + " removed from container " + containerId);
+                return true;
+            }
+        }
+        System.out.println("Package " + packageId + " not found in container " + containerId);
+        return false;
+    }
+
+    public void displayContainerContents() {
+        System.out.println("Contents of container " + containerId + ":");
+        for (Package pkg : packages) {
+            System.out.println("- " + pkg.getPackageId());
+        }
+    }
+}
+
+
+class CargoTypes{
+    private String name;
+    private String description;
+
+
+    public CargoTypes( String name, String description){
+        this.name = name;
+        this.description = description;
+    }
+
+    public String getName(){
+        return name;
+    }
+
+    public String getDescription(){
+        return description
+    }
+
+    public String toString() {
+        return name + " - " + description;
+    }
+
+class CargoManager{
+    private List<Category> categories;
+
+    public CargoManager(){
+        this.categories = new ArrayList<>();
+        categories.add(new Category("Box"));
+        categories.add(new Category("Barrel"));
+        categories.add(new Category("Crate"));
+        categories.add(new Category("Pallet"));
+        categories.add(new Category("Furniture"));
+
+    }
+
+    public List<Category> getCategories() {
+        return new ArrayList<>(categories);
+    }
+
+    public void addCategory(String name, String description) {
+        categories.add(new Category(name, description));
+    }
+
+    public void modifyCategory(String oldName, String newName, String newDescription) {
+        for (Category category : categories) {
+            if (category.getName().equalsIgnoreCase(oldName)) {
+                categories.remove(category);
+                categories.add(new Category(newName, newDescription));
+                return;
+            }
+        }
+        throw new IllegalArgumentException("Category not found: " + oldName);
+    }
+}
+
+}
