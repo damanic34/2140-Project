@@ -76,3 +76,4 @@ public class LoginPage extends JPanel {
         add(rightPanel, BorderLayout.CENTER);
     }
 }
+
