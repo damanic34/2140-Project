@@ -2,15 +2,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.io.IOException;
 
 public class NoticePost {
 
@@ -18,10 +13,11 @@ public class NoticePost {
     private String noticeId;
     private String employee;
     private String date;
-    private java.util.List<String> customerReceiver; // List of customers selected to receive the notice
-    private java.util.List<String> registeredCustomers;
-    private Map<String, java.util.List<String>> customerMessages; // Map to store messages for each customer
-    private Map<String, java.util.List<String>> sentMessages; // Map to store sent notices for each customer
+    private List<String> customerReceiver; // List of customers selected to receive the notice
+    private List<String> registeredCustomers;
+    private Map<String, List<String>> customerMessages; // Map to store messages for each customer
+    private Map<String, List<String>> sentMessages; // Map to store sent notices for each customer
+    private Map<String, List<String>> employeeInbox; // Map to store messages for all employees (inbox)
 
     public NoticePost(String noticeId, String employee, String date) {
         this.noticeId = noticeId;
@@ -31,6 +27,7 @@ public class NoticePost {
         this.registeredCustomers = new ArrayList<>();
         this.customerMessages = new HashMap<>();
         this.sentMessages = new HashMap<>();
+        this.employeeInbox = new HashMap<>();
 
         // Add registered customers
         registeredCustomers.add("User001");
@@ -38,11 +35,16 @@ public class NoticePost {
         registeredCustomers.add("User003");
         registeredCustomers.add("User004");
 
-        // Initialize customer messages map
+        // Initialize customer messages and sent messages map
         for (String customer : registeredCustomers) {
             customerMessages.put(customer, new ArrayList<>());
             sentMessages.put(customer, new ArrayList<>());
         }
+
+        // Initialize employee inbox (all employees)
+        employeeInbox.put("Employee001", new ArrayList<>());
+        employeeInbox.put("Employee002", new ArrayList<>());
+        employeeInbox.put("Employee003", new ArrayList<>());
     }
 
     public void createAndShowGUI() {
@@ -124,6 +126,9 @@ public class NoticePost {
                     sendMessageToCustomer(customer, title, content);
                 }
 
+                // Also send the message to all employees' inboxes
+                sendMessageToEmployees(title, content);
+
                 JOptionPane.showMessageDialog(frame, "Notice sent successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
                 customerReceiver.clear(); // Clear receiver list after sending
                 customerListArea.setText(""); // Clear displayed selected customers
@@ -131,7 +136,7 @@ public class NoticePost {
         });
 
         // Customer view panel
-        JFrame customerViewFrame = new JFrame("Sent Notices!");
+        JFrame customerViewFrame = new JFrame("Sent Notices");
         customerViewFrame.setSize(400, 300);
 
         JPanel customerPanel = new JPanel(new BorderLayout());
@@ -152,7 +157,7 @@ public class NoticePost {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String selectedCustomer = (String) customerViewDropdown.getSelectedItem();
-                java.util.List<String> messages = customerMessages.get(selectedCustomer);
+                List<String> messages = customerMessages.get(selectedCustomer);
                 customerMessageArea.setText(""); // Clear previous messages
                 if (messages != null && !messages.isEmpty()) {
                     for (String message : messages) {
@@ -213,7 +218,46 @@ public class NoticePost {
             }
         });
 
-        // Show the frame
+        // Inbox for Employees
+        JFrame employeeInboxFrame = new JFrame("Employee Inbox");
+        employeeInboxFrame.setSize(400, 300);
+
+        JPanel inboxPanel = new JPanel(new BorderLayout());
+        JLabel inboxLabel = new JLabel("Inbox Messages:");
+        JComboBox<String> employeeDropdown = new JComboBox<>(new String[]{"Employee001", "Employee002", "Employee003"});
+        JTextArea inboxMessageArea = new JTextArea();
+        inboxMessageArea.setEditable(false);
+
+        JButton viewInboxButton = new JButton("View Inbox");
+        inboxPanel.add(inboxLabel, BorderLayout.NORTH);
+        inboxPanel.add(employeeDropdown, BorderLayout.CENTER);
+        inboxPanel.add(viewInboxButton, BorderLayout.SOUTH);
+
+        employeeInboxFrame.add(new JScrollPane(inboxMessageArea), BorderLayout.CENTER);
+        employeeInboxFrame.add(inboxPanel, BorderLayout.NORTH);
+
+        viewInboxButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selectedEmployee = (String) employeeDropdown.getSelectedItem();
+                List<String> messages = employeeInbox.get(selectedEmployee);
+                inboxMessageArea.setText(""); // Clear previous inbox messages
+                if (messages != null && !messages.isEmpty()) {
+                    for (String message : messages) {
+                        inboxMessageArea.append(message + "\n\n");
+                    }
+                } else {
+                    inboxMessageArea.setText("No messages for this employee.");
+                }
+            }
+        });
+
+        // Button to open the employee inbox window
+        JButton openInboxButton = new JButton("View Inbox");
+        panel.add(openInboxButton);
+        openInboxButton.addActionListener(e -> employeeInboxFrame.setVisible(true));
+
+        // Show the main frame
         frame.setVisible(true);
     }
 
@@ -229,6 +273,16 @@ public class NoticePost {
         List<String> sentMessagesForCustomer = sentMessages.get(customer);
         if (sentMessagesForCustomer != null) {
             sentMessagesForCustomer.add("Title: " + title + "\nContent: " + content);
+        }
+    }
+
+    // Method to send the message to all employees' inboxes
+    private void sendMessageToEmployees(String title, String content) {
+        for (String employee : employeeInbox.keySet()) {
+            List<String> inboxMessages = employeeInbox.get(employee);
+            if (inboxMessages != null) {
+                inboxMessages.add("Customer: " + "SomeCustomer" + "\nTitle: " + title + "\nContent: " + content);
+            }
         }
     }
 
