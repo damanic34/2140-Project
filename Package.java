@@ -168,4 +168,60 @@ class PackageTracker {
             System.out.println("Statuses refreshed successfully!");
         }
     }
+    import java.time.LocalDateTime;
+
+public class Main{
+    public static void main(String[] args) {
+        PackageTracker packageTracker = new PackageTracker();
+
+        // Add packages
+        try {
+            packageTracker.addPackage(
+                "TRACK123",
+                "Kingston, Jamaica",
+                "Montego Bay, Jamaica",
+                "In Transit",
+                5.5,
+                0.03,
+                LocalDateTime.now().plusDays(3),
+                "Electronics"
+            );
+
+            packageTracker.addPackage(
+                "TRACK456",
+                "New York, USA",
+                "Spanish Town, Jamaica",
+                "At Sorting Facility",
+                2.0,
+                0.01,
+                LocalDateTime.now().plusDays(7),
+                "Barrel"
+            );
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+
+        // Update package status
+        try {
+            packageTracker.updateStatus("TRACK123", "Out for Delivery");
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+
+        // Retrieve and display package details
+        try {
+            packageTracker.viewPackageDetails("TRACK123");
+            packageTracker.viewPackageDetails("TRACK456");
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+
+        // Attempt to retrieve a non-existent package
+        try {
+            packageTracker.viewPackageDetails("NONEXISTENT");
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+}
 }
