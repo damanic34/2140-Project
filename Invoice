@@ -1,0 +1,52 @@
+import java.util.Date;
+import java.util.List;
+import java.text.SimpleDateFormat;
+
+public class Invoice {
+    private String invoiceId;
+    private Date issueDate;
+    private List<Package> packages;
+    private double totalCost;
+
+    public Invoice(String invoiceId, Date issueDate, List<Package> packages, double totalCost) {
+        this.invoiceId = invoiceId;
+        this.issueDate = issueDate;
+        this.packages = packages;
+        this.totalCost = totalCost;
+    }
+
+    public String getInvoiceId() {
+        return invoiceId;
+    }
+
+    public Date getIssueDate() {
+        return issueDate;
+    }
+
+    public List<Package> getPackages() {
+        return packages;
+    }
+
+    public double getTotalCost() {
+        return totalCost;
+    }
+
+    public void displayInvoice() {
+        System.out.println("Invoice ID: " + invoiceId);
+        System.out.println("Issue Date: " + new SimpleDateFormat("yyyy-MM-dd").format(issueDate));
+        System.out.println("Total Cost: $" + totalCost);
+        System.out.println("Package Details:");
+        for (Package pkg : packages) {
+            System.out.println("- " + pkg.getTrackingNumber() + ": " + pkg.getStatus());
+        }
+    }
+
+    public static Invoice generateInvoice(String invoiceId, List<Package> packages) {
+        double totalCost = 0;
+        for (Package pkg : packages) {
+            // Example cost calculation: $10 per package
+            totalCost += 10; // Fixed cost for demo
+        }
+        return new Invoice(invoiceId, new Date(), packages, totalCost);
+    }
+}
