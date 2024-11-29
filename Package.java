@@ -1,22 +1,20 @@
-import java.time.LocalDateTime;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.time.LocalDateTime;
 
 public class Package {
-    private String trackingNumber;  // Unique identifier
-    private String origin;          // Package origin
-    private String destination;     // Package destination
-    private String status;          // Current status (e.g., "In Transit")
-    private LocalDateTime lastUpdated;  // Timestamp of the last status update
-    private LocalDateTime estimatedDeliveryDate;  // Estimated delivery date
-    private double weight;          // Weight of the package
-    private double volume;          // Volume of the package
-    private Category cargoType;     // type of cargo 
+    private String trackingNumber;
+    private String origin;
+    private String destination;
+    private String status;
+    private LocalDateTime lastUpdated;
+    private LocalDateTime estimatedDeliveryDate;
+    private double weight;
+    private double volume;
+    private String cargoType;
 
-    // Constructor
     public Package(String trackingNumber, String origin, String destination, String status,
-                   double weight, double volume, LocalDateTime estimatedDeliveryDate) {
+    double weight, double volume, LocalDateTime estimatedDeliveryDate, String cargoType) {
         this.trackingNumber = trackingNumber;
         this.origin = origin;
         this.destination = destination;
@@ -24,7 +22,8 @@ public class Package {
         this.weight = weight;
         this.volume = volume;
         this.estimatedDeliveryDate = estimatedDeliveryDate;
-        this.lastUpdated = LocalDateTime.now();  // Automatically sets the time of creation
+        this.cargoType = cargoType;
+        this.lastUpdated = LocalDateTime.now();
     }
 
     // Getters and Setters
@@ -46,7 +45,7 @@ public class Package {
 
     public void setStatus(String status) {
         this.status = status;
-        this.lastUpdated = LocalDateTime.now();  // Update timestamp
+        this.lastUpdated = LocalDateTime.now();
     }
 
     public LocalDateTime getLastUpdated() {
@@ -69,13 +68,14 @@ public class Package {
         return volume;
     }
 
-    public Category getCargoType() {
+    public String getCargoType() {
         return cargoType;
     }
 
-    public void setCargoType(Category cargoType) {
+    public void setCargoType(String cargoType) {
         this.cargoType = cargoType;
     }
+
     public String getDetails() {
         return "Tracking Number: " + trackingNumber + "\n" +
                "Origin: " + origin + "\n" +
@@ -84,31 +84,27 @@ public class Package {
                "Weight: " + weight + " kg\n" +
                "Volume: " + volume + " cubic meters\n" +
                "Estimated Delivery Date: " + estimatedDeliveryDate + "\n" +
-               "Last Updated: " + lastUpdated;
-               "cargoType: " + (cargoType != null cargoType.getName() : "Uncategorized") + "\n";
+               "Last Updated: " + lastUpdated + "\n" +
+               "Cargo Type: " + cargoType;
     }
 }
 
-
 class PackageService {
-    private Map<String, Package> packageMap;  // Storage for all packages using trackingNumber as the key
+    private Map<String, Package> packageMap;
 
-    // Constructor
     public PackageService() {
         this.packageMap = new HashMap<>();
     }
 
-    // Add a new package
     public void addPackage(String trackingNumber, String origin, String destination, String status,
-                           double weight, double volume, LocalDateTime estimatedDeliveryDate) {
+                           double weight, double volume, LocalDateTime estimatedDeliveryDate, String cargoType) {
         if (packageMap.containsKey(trackingNumber)) {
             throw new IllegalArgumentException("Tracking number already exists!");
         }
-        Package newPackage = new Package(trackingNumber, origin, destination, status, weight, volume, estimatedDeliveryDate);
+        Package newPackage = new Package(trackingNumber, origin, destination, status, weight, volume, estimatedDeliveryDate, cargoType);
         packageMap.put(trackingNumber, newPackage);
     }
 
-    // Update the status of a package
     public void updatePackageStatus(String trackingNumber, String newStatus) {
         Package pkg = packageMap.get(trackingNumber);
         if (pkg == null) {
@@ -117,7 +113,6 @@ class PackageService {
         pkg.setStatus(newStatus);
     }
 
-    // Get package details
     public String getPackageDetails(String trackingNumber) {
         Package pkg = packageMap.get(trackingNumber);
         if (pkg == null) {
@@ -125,50 +120,47 @@ class PackageService {
         }
         return pkg.getDetails();
     }
-
+}
 
 class PackageTracker {
-        private PackageService packageService;
-    
-        // Constructor
-        public PackageTracker() {
-            this.packageService = new PackageService();
-        }
-    
-        // Add a new package
-        public void addPackage(String trackingNumber, String origin, String destination, String status,
-                               double weight, double volume, LocalDateTime estimatedDeliveryDate) {
-            packageService.addPackage(trackingNumber, origin, destination, status, weight, volume, estimatedDeliveryDate);
-            System.out.println("Package added successfully!");
-        }
-    
-        // Update a package's status
-        public void updateStatus(String trackingNumber, String newStatus) {
-            try {
-                packageService.updatePackageStatus(trackingNumber, newStatus);
-                System.out.println("Package status updated successfully!");
-            } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
-            }
-        }
-    
-        // View package details
-        public vString viewPackageDetails(String trackingNumber) {
-            try {
-                String details = packageService.getPackageDetails(trackingNumber);
-                System.out.println(details);
-            } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
-            }
-        }
-    
-        // Refresh all package statuses
-        public void refreshStatuses() {
-            packageService.refreshStatuses();
-            System.out.println("Statuses refreshed successfully!");
+    private PackageService packageService;
+
+    public PackageTracker() {
+        this.packageService = new PackageService();
+    }
+
+    public void addPackage(String trackingNumber, String origin, String destination, String status,
+                           double weight, double volume, LocalDateTime estimatedDeliveryDate, String cargoType) {
+        packageService.addPackage(trackingNumber, origin, destination, status, weight, volume, estimatedDeliveryDate, cargoType);
+        System.out.println("Package added successfully!");
+    }
+
+    public void updateStatus(String trackingNumber, String newStatus) {
+        try {
+            packageService.updatePackageStatus(trackingNumber, newStatus);
+            System.out.println("Package status updated successfully!");
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
         }
     }
-    import java.time.LocalDateTime;
+
+    public void viewPackageDetails(String trackingNumber) {
+        try {
+            String details = packageService.getPackageDetails(trackingNumber);
+            System.out.println(details);
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void refreshStatuses() {
+        System.out.println("Statuses refreshed successfully!");
+    }
+
+}
+
+
+import java.time.LocalDateTime;
 
 public class Main{
     public static void main(String[] args) {
