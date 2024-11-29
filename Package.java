@@ -14,13 +14,12 @@ public class Package {
     private String cargoType;
 
     public Package(String trackingNumber, String origin, String destination, String status,
-    double weight, double volume, LocalDateTime estimatedDeliveryDate, String cargoType) {
+    double weight, LocalDateTime estimatedDeliveryDate, String cargoType) {
         this.trackingNumber = trackingNumber;
         this.origin = origin;
         this.destination = destination;
         this.status = status;
         this.weight = weight;
-        this.volume = volume;
         this.estimatedDeliveryDate = estimatedDeliveryDate;
         this.cargoType = cargoType;
         this.lastUpdated = LocalDateTime.now();
@@ -62,10 +61,6 @@ public class Package {
 
     public double getWeight() {
         return weight;
-    }
-
-    public double getVolume() {
-        return volume;
     }
 
     public String getCargoType() {
@@ -161,59 +156,102 @@ class PackageTracker {
 
 
 import java.time.LocalDateTime;
+import java.util.Scanner;
 
-public class Main{
+public class Main {
     public static void main(String[] args) {
         PackageTracker packageTracker = new PackageTracker();
+        Scanner scanner = new Scanner(System.in);
 
-        // Add packages
-        try {
-            packageTracker.addPackage(
-                "TRACK123",
-                "Kingston, Jamaica",
-                "Montego Bay, Jamaica",
-                "In Transit",
-                5.5,
-                0.03,
-                LocalDateTime.now().plusDays(3),
-                "Electronics"
-            );
+        while (true) {
+            System.out.println("\n=== Package Tracker Menu ===");
+            System.out.println("1. Add a new package");
+            System.out.println("2. Update package status");
+            System.out.println("3. View package details");
+            System.out.println("4. Exit");
+            System.out.print("Enter your choice: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
 
-            packageTracker.addPackage(
-                "TRACK456",
-                "New York, USA",
-                "Spanish Town, Jamaica",
-                "At Sorting Facility",
-                2.0,
-                0.01,
-                LocalDateTime.now().plusDays(7),
-                "Barrel"
-            );
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-        }
+            switch (choice) {
+                case 1:
+                    // Add a new package
+                    try {
+                        System.out.print("Enter tracking number: ");
+                        String trackingNumber = scanner.nextLine();
 
-        // Update package status
-        try {
-            packageTracker.updateStatus("TRACK123", "Out for Delivery");
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-        }
+                        System.out.print("Enter origin: ");
+                        String origin = scanner.nextLine();
 
-        // Retrieve and display package details
-        try {
-            packageTracker.viewPackageDetails("TRACK123");
-            packageTracker.viewPackageDetails("TRACK456");
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-        }
+                        System.out.print("Enter destination: ");
+                        String destination = scanner.nextLine();
 
-        // Attempt to retrieve a non-existent package
-        try {
-            packageTracker.viewPackageDetails("NONEXISTENT");
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
+                        System.out.print("Enter status: ");
+                        String status = scanner.nextLine();
+
+                        System.out.print("Enter weight (lb): ");
+                        double weight = scanner.nextDouble();
+
+                        System.out.print("Enter delivery days from now: ");
+                        int daysToDelivery = scanner.nextInt();
+                        scanner.nextLine(); // Consume newline
+
+                        System.out.print("Enter package description: ");
+                        String description = scanner.nextLine();
+
+                        packageTracker.addPackage(
+                            trackingNumber,
+                            origin,
+                            destination,
+                            status,
+                            weight,
+                            volume,
+                            LocalDateTime.now().plusDays(daysToDelivery),
+                            description
+                        );
+                        System.out.println("Package added successfully!");
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Error: " + e.getMessage());
+                    }
+                    break;
+
+                case 2:
+                    // Update package status
+                    try {
+                        System.out.print("Enter tracking number: ");
+                        String trackingNumber = scanner.nextLine();
+
+                        System.out.print("Enter new status: ");
+                        String newStatus = scanner.nextLine();
+
+                        packageTracker.updateStatus(trackingNumber, newStatus);
+                        System.out.println("Package status updated successfully!");
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Error: " + e.getMessage());
+                    }
+                    break;
+
+                case 3:
+                    // View package details
+                    try {
+                        System.out.print("Enter tracking number: ");
+                        String trackingNumber = scanner.nextLine();
+
+                        packageTracker.viewPackageDetails(trackingNumber);
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Error: " + e.getMessage());
+                    }
+                    break;
+
+                case 4:
+                    // Exit
+                    System.out.println("Exiting the program. Goodbye!");
+                    scanner.close();
+                    return;
+
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
         }
     }
-}
 }
